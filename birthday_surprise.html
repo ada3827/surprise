@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生日惊喜</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        #message {
+            font-size: 3em;
+            z-index: 2;
+        }
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: #ff0;
+            border-radius: 50%;
+            z-index: 1;
+            animation: rise 1.5s ease-out forwards, explode 1.5s ease-out 1.5s forwards;
+        }
+        @keyframes rise {
+            0% { transform: translateY(100vh); opacity: 1; }
+            100% { transform: translateY(var(--rise-height)); opacity: 1; }
+        }
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(20); opacity: 0; }
+        }
+        .spark {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: #ff4500;
+            border-radius: 50%;
+            animation: spark 1s ease-out forwards;
+        }
+        @keyframes spark {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="message">生日快乐！</div>
+    <audio id="background-music" autoplay loop>
+        <source src="https://github.com/ada3827/surprise/raw/refs/heads/main/happy-birthday-254480.mp3" type="audio/mpeg">
+        您的浏览器不支持音频元素。
+    </audio>
+    <script>
+        function createFirework() {
+            const firework = document.createElement('div');
+            firework.classList.add('firework');
+            firework.style.left = Math.random() * window.innerWidth + 'px';
+            firework.style.setProperty('--rise-height', Math.random() * 50 + 25 + 'vh');
+            document.body.appendChild(firework);
+
+            setTimeout(() => {
+                createSparks(firework);
+                firework.remove();
+            }, 1500);
+        }
+
+        function createSparks(firework) {
+            const numSparks = 100;
+            for (let i = 0; i < numSparks; i++) {
+                const spark = document.createElement('div');
+                spark.classList.add('spark');
+                const angle = Math.random() * 2 * Math.PI;
+                const distance = Math.random() * 100;
+                spark.style.setProperty('--x', Math.cos(angle) * distance + 'px');
+                spark.style.setProperty('--y', Math.sin(angle) * distance + 'px');
+                spark.style.left = firework.style.left;
+                spark.style.top = firework.style.top;
+                document.body.appendChild(spark);
+
+                setTimeout(() => {
+                    spark.remove();
+                }, 1000);
+            }
+        }
+
+        setInterval(createFirework, 1000);
+
+        // 确保音乐自动播放
+        document.addEventListener('click', function() {
+            const audio = document.getElementById('background-music');
+            audio.play();
+        });
+    </script>
+</body>
+</html>
